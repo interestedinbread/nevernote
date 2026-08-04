@@ -19,12 +19,12 @@ const htmlSplitter = new RecursiveCharacterTextSplitter({
   separators: RecursiveCharacterTextSplitter.getSeparatorsForLanguage("html"),
 })
 
-/** Stable Chroma document id: `{noteId}:{chunkIndex}`. */
+// chroma data object id created from noteid and chunk index
 export function chunkDocumentId(noteId: string, chunkIndex: number): string {
   return `${noteId}:${chunkIndex}`
 }
 
-/** Title + body string passed to the splitter (title included in every chunk's text). */
+// title and content are passed to splitter, the title is included with every chunk
 export function buildNoteEmbedText(title: string, content: string): string {
   const trimmedTitle = title.trim()
   const trimmedContent = content.trim()
@@ -41,6 +41,8 @@ export function buildNoteEmbedText(title: string, content: string): string {
   return `Title: ${trimmedTitle}\n\n${trimmedContent}`
 }
 
+// take data from notechunkInput excluding the content and put in a new object with chunkIndex.
+// this is the metadata for that chunk. 
 function toChunkMetadata(
   input: NoteChunkInput,
   chunkIndex: number
@@ -54,13 +56,10 @@ function toChunkMetadata(
   }
 }
 
+// this creates a hash of the content to check if there actually were any changes
 export function toContentHash(title: string, content: string): string {
   const trimmed = buildNoteEmbedText(title, content)
   return createHash("sha256").update(trimmed).digest("hex")
-}
-
-function looksLikeHtml(content: string): boolean {
-  return /<[a-z][^>]*>/i.test(content)
 }
 
 function extractPreservedBlocks(content: string): {
