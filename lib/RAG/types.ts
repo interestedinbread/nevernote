@@ -7,7 +7,7 @@ export type NoteChunkInput = {
   content: string
 }
 
-/** Stored on every Chroma / LangChain document (see Implementation_roadmap). */
+/** Stored on every Chroma / LangChain document */
 export type RagChunkMetadata = {
   userId: string
   noteId: string

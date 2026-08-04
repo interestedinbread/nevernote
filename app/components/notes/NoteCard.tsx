@@ -54,6 +54,7 @@ export function NoteCard({
                 <p className="min-w-0 flex-1 truncate pl-2 text-base font-bold">{title}</p>
             </div>
             <p className={previewClass}>{renderNotePreview(note.content)}</p>
+            {/* <p className="mt-auto text-xs">{note.customOrder}</p> */}
             <p className={timeClass}>{renderNoteUpdatedTime(note.updatedAt)}</p>
         </>
     )

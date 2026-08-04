@@ -19,7 +19,6 @@ type ChatMessage =
 
 interface ChatPanelProps {
   onOpenSource: (source: Pick<RagQuerySource, "noteId" | "notebookId" | "title">) => void
-  /** When set, queries are scoped to this notebook only. */
   notebookId?: string | null
 }
 

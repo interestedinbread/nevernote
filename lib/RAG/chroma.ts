@@ -16,7 +16,6 @@ export const RAG_TOP_K_DEFAULT = 5
 
 const DEFAULT_CHROMA_URL = "http://localhost:8000"
 const DEFAULT_CHROMA_COLLECTION = "nevernote-dev"
-/** Stored on the collection for identification (BYO OpenAI embeddings). */
 const RAG_COLLECTION_SCHEMA_VERSION = "byo-v1"
 
 let chromaClient: ChromaClient | null = null

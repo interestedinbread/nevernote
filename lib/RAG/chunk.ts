@@ -12,14 +12,6 @@ export const RAG_CHUNK_OVERLAP = 200
 const CODE_BLOCK_MARKER_PREFIX = "\u0000RAG_CODE_"
 const CODE_BLOCK_MARKER_SUFFIX = "\u0000"
 
-const markdownSplitter = new RecursiveCharacterTextSplitter({
-  chunkSize: RAG_CHUNK_SIZE,
-  chunkOverlap: RAG_CHUNK_OVERLAP,
-  separators: [
-    "\n# ",
-    ...RecursiveCharacterTextSplitter.getSeparatorsForLanguage("markdown"),
-  ],
-})
 
 const htmlSplitter = new RecursiveCharacterTextSplitter({
   chunkSize: RAG_CHUNK_SIZE,

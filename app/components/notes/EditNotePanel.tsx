@@ -204,7 +204,7 @@ export function EditNotePanel ({
                 
                 >
                 <input
-                className="text-[3rem] rounded-xl bg-transparent p-1 m-2 outline-none placeholder:text-muted"
+                className="text-[2rem] rounded-xl bg-transparent p-1 m-2 outline-none placeholder:text-muted"
                     id="title-input"
                     type="text"
                     value={title}
