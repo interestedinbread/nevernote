@@ -61,9 +61,9 @@ export function toContentHash(title: string, content: string): string {
 
 
 async function splitNoteBody(content: string): Promise<string[]> {
-  const splitBody = await htmlSplitter.splitText(content)
-  return splitBody
+  return htmlSplitter.splitText(content)
 }
+
 
 async function splitNoteIntoChunks(
   title: string,
