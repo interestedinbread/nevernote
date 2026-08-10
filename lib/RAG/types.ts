@@ -31,3 +31,12 @@ export type RagQueryResult = {
   metadata: RagChunkMetadata
   distance: number | null
 }
+
+// chroma upsert data model for reference
+
+type upsertObject = {
+  ids: string[],
+  documents: string[],
+  metadatas: object[],
+  embeddings: number[][]
+}

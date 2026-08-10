@@ -19,7 +19,7 @@ const htmlSplitter = new RecursiveCharacterTextSplitter({
   separators: RecursiveCharacterTextSplitter.getSeparatorsForLanguage("html"),
 })
 
-// chroma data object id created from noteid and chunk index
+// chroma data object id created from noteId and chunk index
 export function chunkDocumentId(noteId: string, chunkIndex: number): string {
   return `${noteId}:${chunkIndex}`
 }
@@ -62,39 +62,10 @@ export function toContentHash(title: string, content: string): string {
   return createHash("sha256").update(trimmed).digest("hex")
 }
 
-function extractPreservedBlocks(content: string): {
-  text: string
-  blocks: string[]
-} {
-  const blocks: string[] = []
-  const pattern = looksLikeHtml(content)
-    ? /<pre[\s\S]*?<\/pre>/gi
-    : /```[\s\S]*?```/g
-
-  const text = content.replace(pattern, (match) => {
-    const index = blocks.length
-    blocks.push(match)
-    return `${CODE_BLOCK_MARKER_PREFIX}${index}${CODE_BLOCK_MARKER_SUFFIX}`
-  })
-
-  return { text, blocks }
-}
-
-function restorePreservedBlocks(text: string, blocks: string[]): string {
-  return text.replace(
-    new RegExp(
-      `${CODE_BLOCK_MARKER_PREFIX}(\\d+)${CODE_BLOCK_MARKER_SUFFIX}`,
-      "g"
-    ),
-    (_, index) => blocks[Number(index)] ?? ""
-  )
-}
 
 async function splitNoteBody(content: string): Promise<string[]> {
-  const { text, blocks } = extractPreservedBlocks(content)
-  const splitter = looksLikeHtml(content) ? htmlSplitter : markdownSplitter
-  const splits = await splitter.splitText(text)
-  return splits.map((split) => restorePreservedBlocks(split, blocks))
+  const splitBody = await htmlSplitter.splitText(content)
+  return splitBody
 }
 
 async function splitNoteIntoChunks(
