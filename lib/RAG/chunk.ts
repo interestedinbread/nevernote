@@ -9,9 +9,6 @@ import type { NoteChunkInput, RagChunkMetadata } from "@/lib/RAG/types"
 export const RAG_CHUNK_SIZE = 1000
 export const RAG_CHUNK_OVERLAP = 200
 
-const CODE_BLOCK_MARKER_PREFIX = "\u0000RAG_CODE_"
-const CODE_BLOCK_MARKER_SUFFIX = "\u0000"
-
 
 const htmlSplitter = new RecursiveCharacterTextSplitter({
   chunkSize: RAG_CHUNK_SIZE,
