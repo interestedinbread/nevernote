@@ -59,12 +59,7 @@ export function toContentHash(title: string, content: string): string {
   return createHash("sha256").update(trimmed).digest("hex")
 }
 
-
-async function splitNoteBody(content: string): Promise<string[]> {
-  return htmlSplitter.splitText(content)
-}
-
-
+// this trims title and content, splits content, adds a prefix to the title, and returns title with prefix added with each chunk
 async function splitNoteIntoChunks(
   title: string,
   content: string
@@ -76,16 +71,13 @@ async function splitNoteIntoChunks(
     return trimmedTitle ? [`Title: ${trimmedTitle}`] : []
   }
 
-  const bodySplits = await splitNoteBody(trimmedContent)
+  const bodySplits = await htmlSplitter.splitText(trimmedContent)
   const titlePrefix = trimmedTitle ? `Title: ${trimmedTitle}\n\n` : ""
 
   return bodySplits.map((split) => `${titlePrefix}${split}`)
 }
 
-/**
- * Split a note into LangChain documents for embedding.
- * Returns an empty array when title and content are both empty/whitespace.
- */
+
 export async function chunkNote(
   input: NoteChunkInput
 ): Promise<Document<RagChunkMetadata>[]> {
