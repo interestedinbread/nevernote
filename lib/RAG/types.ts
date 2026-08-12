@@ -34,7 +34,7 @@ export type RagQueryResult = {
 
 // chroma upsert data model for reference
 
-type upsertObject = {
+export type chromaObject = {
   ids: string[],
   documents: string[],
   metadatas: object[],

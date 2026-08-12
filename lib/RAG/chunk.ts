@@ -40,7 +40,7 @@ export function buildNoteEmbedText(title: string, content: string): string {
 
 // take data from notechunkInput excluding the content and put in a new object with chunkIndex.
 // this is the metadata for that chunk. 
-function toChunkMetadata(
+function buildChunkMetadata(
   input: NoteChunkInput,
   chunkIndex: number
 ): RagChunkMetadata {
@@ -93,7 +93,7 @@ export async function chunkNote(
     (pageContent, chunkIndex) =>
       new Document({
         pageContent,
-        metadata: toChunkMetadata(input, chunkIndex),
+        metadata: buildChunkMetadata(input, chunkIndex),
       })
   )
 
