@@ -7,6 +7,11 @@ export type NoteChunkInput = {
   content: string
 }
 
+export type Document = {
+  content: string,
+  metadata: RagChunkMetadata
+}
+
 export type RagChunkMetadata = {
   userId: string
   noteId: string

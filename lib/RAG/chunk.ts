@@ -1,10 +1,9 @@
 import "server-only"
 
-import { Document } from "@langchain/core/documents"
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters"
 import { createHash } from "crypto"
 
-import type { NoteChunkInput, RagChunkMetadata } from "@/lib/RAG/types"
+import type { NoteChunkInput, RagChunkMetadata, Document } from "@/lib/RAG/types"
 
 // these are the same as the defaults set by langchain, they are set here for clarity
 export const RAG_CHUNK_SIZE = 1000
@@ -81,7 +80,7 @@ async function splitNoteIntoChunks(
 
 export async function chunkNote(
   input: NoteChunkInput
-): Promise<Document<RagChunkMetadata>[]> {
+): Promise<Document[]> {
   const trimmedTitle = input.title.trim()
   const trimmedContent = input.content.trim()
 
@@ -92,11 +91,11 @@ export async function chunkNote(
   const splits = await splitNoteIntoChunks(input.title, input.content)
   const documents = splits.map(
     (pageContent, chunkIndex) =>
-      new Document({
-        pageContent,
+      ({
+        content: pageContent,
         metadata: buildChunkMetadata(input, chunkIndex),
       })
-  )
+    )
 
   return documents
 }
