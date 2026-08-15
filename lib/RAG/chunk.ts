@@ -6,6 +6,7 @@ import { createHash } from "crypto"
 
 import type { NoteChunkInput, RagChunkMetadata } from "@/lib/RAG/types"
 
+// these are the same as the defaults set by langchain, they are set here for clarity
 export const RAG_CHUNK_SIZE = 1000
 export const RAG_CHUNK_OVERLAP = 200
 
@@ -96,19 +97,6 @@ export async function chunkNote(
         metadata: buildChunkMetadata(input, chunkIndex),
       })
   )
-
-  if (process.env.NODE_ENV === "development") {
-    const lengths = documents.map((doc) => doc.pageContent.length)
-    const avgLength =
-      lengths.length === 0
-        ? 0
-        : Math.round(
-            lengths.reduce((sum, length) => sum + length, 0) / lengths.length
-          )
-    console.info(
-      `[rag] chunkNote noteId=${input.noteId} chunks=${documents.length} avgChars=${avgLength}`
-    )
-  }
 
   return documents
 }

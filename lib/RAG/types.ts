@@ -1,4 +1,4 @@
-/** Input for chunking a single note before embedding. */
+
 export type NoteChunkInput = {
   userId: string
   noteId: string
@@ -7,7 +7,6 @@ export type NoteChunkInput = {
   content: string
 }
 
-/** Stored on every Chroma / LangChain document */
 export type RagChunkMetadata = {
   userId: string
   noteId: string
@@ -16,7 +15,6 @@ export type RagChunkMetadata = {
   notebookId: string
 }
 
-/** Input for similarity search over indexed note chunks. */
 export type RagQueryInput = {
   query: string
   userId: string
@@ -24,13 +22,13 @@ export type RagQueryInput = {
   k?: number
 }
 
-/** One retrieved chunk from Chroma similarity search. */
 export type RagQueryResult = {
   id: string
   text: string
   metadata: RagChunkMetadata
   distance: number | null
 }
+
 
 // chroma upsert data model for reference
 
