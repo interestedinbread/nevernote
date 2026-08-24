@@ -9,34 +9,19 @@ import type { NoteChunkInput, RagChunkMetadata, Document } from "@/lib/RAG/types
 export const RAG_CHUNK_SIZE = 1000
 export const RAG_CHUNK_OVERLAP = 200
 
-
+// instantiate htmlsplitter with chunksize, overlap, and separators
 const htmlSplitter = new RecursiveCharacterTextSplitter({
   chunkSize: RAG_CHUNK_SIZE,
   chunkOverlap: RAG_CHUNK_OVERLAP,
-  separators: RecursiveCharacterTextSplitter.getSeparatorsForLanguage("html"),
+  separators: RecursiveCharacterTextSplitter.getSeparatorsForLanguage("html")
 })
 
 // chroma data object id created from noteId and chunk index
-export function chunkDocumentId(noteId: string, chunkIndex: number): string {
-  return `${noteId}:${chunkIndex}`
+export function chunkDocumentId (noteId: string, chunkIndex: string): string {
+    return `${noteId}:${chunkIndex}`
 }
 
-// title and content are passed to splitter, the title is included with every chunk
-export function buildNoteEmbedText(title: string, content: string): string {
-  const trimmedTitle = title.trim()
-  const trimmedContent = content.trim()
 
-  if (!trimmedTitle && !trimmedContent) {
-    return ""
-  }
-  if (!trimmedContent) {
-    return `Title: ${trimmedTitle}`
-  }
-  if (!trimmedTitle) {
-    return trimmedContent
-  }
-  return `Title: ${trimmedTitle}\n\n${trimmedContent}`
-}
 
 // take data from notechunkInput excluding the content and put in a new object with chunkIndex.
 // this is the metadata for that chunk. 
@@ -53,11 +38,7 @@ function buildChunkMetadata(
   }
 }
 
-// this creates a hash of the content to check if there actually were any changes
-export function toContentHash(title: string, content: string): string {
-  const trimmed = buildNoteEmbedText(title, content)
-  return createHash("sha256").update(trimmed).digest("hex")
-}
+
 
 // this trims title and content, splits content, adds a prefix to the title, and returns title with prefix added with each chunk
 async function splitNoteIntoChunks(
@@ -67,10 +48,12 @@ async function splitNoteIntoChunks(
   const trimmedTitle = title.trim()
   const trimmedContent = content.trim()
 
+// if there is no trimmed content, check if there is a trimmed title. If there is return it and otherwise return empty array. 
   if (!trimmedContent) {
     return trimmedTitle ? [`Title: ${trimmedTitle}`] : []
   }
 
+// split just the note content, then create title element with linebreaks beneath and append to each bodysplit
   const bodySplits = await htmlSplitter.splitText(trimmedContent)
   const titlePrefix = trimmedTitle ? `Title: ${trimmedTitle}\n\n` : ""
 
