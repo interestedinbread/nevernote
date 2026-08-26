@@ -5,12 +5,28 @@ vi.mock("server-only", () => ({}))
 
 import {
   chunkObjectId,
+  splitNoteIntoChunks,
   chunkNote
 } from "@/lib/RAG/chunk"
 
 describe("chunkObjectId", () => {
   it("formats noteId and chunk index", () => {
     expect(chunkObjectId("note-1", 0)).toBe("note-1:0")
+  })
+})
+
+describe("splitNoteIntoChunks", () => {
+  it("returns only title if no content is provided", async () => {
+    const docs = await splitNoteIntoChunks("Note 1", "")
+
+    expect(docs).toHaveLength(1)
+    expect(docs[0]).toBe("Title: Note 1")
+  })
+
+  it("returns only content if not title is provided", async () => {
+    const docs = await splitNoteIntoChunks("", "Short body.") 
+
+    expect(docs).toEqual(["Short body."])
   })
 })
 
@@ -76,4 +92,6 @@ describe("chunkNote", () => {
     expect(codeChunk?.content).toContain("<pre")
     expect(codeChunk?.content).toContain(code)
   })
+
+
 })

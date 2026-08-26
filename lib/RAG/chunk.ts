@@ -35,8 +35,8 @@ function buildChunkMetadata(
   }
 }
 
-// this trims title and content, splits content, adds a prefix to the title, and returns title with prefix added with each chunk
-async function splitNoteIntoChunks(
+// this takes title and content and returns an array of strings. Each string is a text chunk with title prefix
+export async function splitNoteIntoChunks(
   title: string,
   content: string
 ) : Promise<string[]> {
@@ -47,31 +47,26 @@ async function splitNoteIntoChunks(
     return trimmedTitle ? [`Title: ${trimmedTitle}`] : []
   }
 
-  const contentSplits = await htmlSplitter.splitText(trimmedContent)
-  const titlePrefix = title ? `Title: ${trimmedTitle}\n\n` : ""
+  const contentSplits = await htmlSplitter.splitText(content)
+  const titlePrefix = trimmedTitle ? `Title: ${trimmedTitle}` : ''
 
-  return contentSplits.map( (split) => `${titlePrefix}${split}`)
+  return contentSplits.map((split) => `${titlePrefix}${split}`)
 }
 
 // take note chunk input and return an array of documents
 export async function chunkNote(
   input: NoteChunkInput
 ) : Promise<Document[]> {
-  const trimmedTitle = input.title.trim()
-  const trimmedContent = input.content.trim()
-
-  if(!trimmedContent && !trimmedTitle){
+  if(!input.title && !input.content){
     return []
   }
 
-  const splits = await splitNoteIntoChunks(trimmedTitle, trimmedContent)
+  const splits = await splitNoteIntoChunks(input.title, input.content)
 
-  const documents = splits.map(
-    (split, index) => ({
-      content: split,
-      metadata: buildChunkMetadata(input, index)
-    })
-  )
+  const documents = splits.map((split, index) => ({
+    content: split,
+    metadata: buildChunkMetadata(input, index)
+  }))
 
   return documents
 }
