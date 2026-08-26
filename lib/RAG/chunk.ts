@@ -23,9 +23,9 @@ export function chunkObjectId(noteId: string, chunkIndex: number): string {
 // take data from notechunkInput excluding the content and put in a new object with chunkIndex.
 // this is the metadata for that chunk. 
 function buildChunkMetadata(
-  input: NoteChunkInput, 
+  input: NoteChunkInput,
   chunkIndex: number
-): RagChunkMetadata {
+) : RagChunkMetadata {
   return {
     userId: input.userId,
     noteId: input.noteId,
@@ -39,18 +39,18 @@ function buildChunkMetadata(
 async function splitNoteIntoChunks(
   title: string,
   content: string
-): Promise<string[]> {
-  
-// if there is no trimmed content, check if there is a trimmed title. If there is return it and otherwise return empty array. 
-  if(!content){
-    return title ? [`Title: ${title}`] : []
+) : Promise<string[]> {
+  const trimmedTitle = title.trim()
+  const trimmedContent = content.trim()
+
+  if(!trimmedContent){
+    return trimmedTitle ? [`Title: ${trimmedTitle}`] : []
   }
 
-// split just the note content, then create title element with linebreaks beneath and append to each bodysplit
-  const bodySplits = await htmlSplitter.splitText(content)
-  const titlePrefix = title ? `Title: ${title}\n\n` : ""
+  const contentSplits = await htmlSplitter.splitText(trimmedContent)
+  const titlePrefix = title ? `Title: ${trimmedTitle}\n\n` : ""
 
-  return bodySplits.map((split) => `${titlePrefix}${split}`)
+  return contentSplits.map( (split) => `${titlePrefix}${split}`)
 }
 
 // take note chunk input and return an array of documents
