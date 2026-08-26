@@ -1,7 +1,7 @@
 import "server-only"
 
 import { deleteRagDocumentsForNote, upsertRagDocuments } from "./chroma";
-import { chunkNote, chunkDocumentId, toContentHash } from "./chunk";
+import { chunkNote, chunkObjectId } from "./chunk";
 import { prisma } from "../db";
 
 type IngestInput = {
@@ -49,7 +49,7 @@ export async function ingestNote(input: IngestInput): Promise<void>{
     }
 
     const documentIds = documents.map((doc) =>
-        chunkDocumentId(doc.metadata.noteId, doc.metadata.chunkIndex)
+        chunkObjectId(doc.metadata.noteId, doc.metadata.chunkIndex)
     )
 
     await upsertRagDocuments(documents, documentIds)

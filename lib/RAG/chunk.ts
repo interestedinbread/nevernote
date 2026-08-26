@@ -1,7 +1,6 @@
 import "server-only"
 
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters"
-import { createHash } from "crypto"
 
 import type { NoteChunkInput, RagChunkMetadata, Document } from "@/lib/RAG/types"
 
@@ -17,16 +16,14 @@ const htmlSplitter = new RecursiveCharacterTextSplitter({
 })
 
 // chroma data object id created from noteId and chunk index
-export function chunkDocumentId (noteId: string, chunkIndex: string): string {
+export function chunkObjectId(noteId: string, chunkIndex: number): string {
     return `${noteId}:${chunkIndex}`
 }
-
-
 
 // take data from notechunkInput excluding the content and put in a new object with chunkIndex.
 // this is the metadata for that chunk. 
 function buildChunkMetadata(
-  input: NoteChunkInput,
+  input: NoteChunkInput, 
   chunkIndex: number
 ): RagChunkMetadata {
   return {
@@ -34,51 +31,47 @@ function buildChunkMetadata(
     noteId: input.noteId,
     chunkIndex,
     title: input.title,
-    notebookId: input.notebookId,
+    notebookId: input.notebookId
   }
 }
-
-
 
 // this trims title and content, splits content, adds a prefix to the title, and returns title with prefix added with each chunk
 async function splitNoteIntoChunks(
   title: string,
   content: string
 ): Promise<string[]> {
-  const trimmedTitle = title.trim()
-  const trimmedContent = content.trim()
-
+  
 // if there is no trimmed content, check if there is a trimmed title. If there is return it and otherwise return empty array. 
-  if (!trimmedContent) {
-    return trimmedTitle ? [`Title: ${trimmedTitle}`] : []
+  if(!content){
+    return title ? [`Title: ${title}`] : []
   }
 
 // split just the note content, then create title element with linebreaks beneath and append to each bodysplit
-  const bodySplits = await htmlSplitter.splitText(trimmedContent)
-  const titlePrefix = trimmedTitle ? `Title: ${trimmedTitle}\n\n` : ""
+  const bodySplits = await htmlSplitter.splitText(content)
+  const titlePrefix = title ? `Title: ${title}\n\n` : ""
 
   return bodySplits.map((split) => `${titlePrefix}${split}`)
 }
 
-
+// take note chunk input and return an array of documents
 export async function chunkNote(
   input: NoteChunkInput
-): Promise<Document[]> {
+) : Promise<Document[]> {
   const trimmedTitle = input.title.trim()
   const trimmedContent = input.content.trim()
 
-  if (!trimmedTitle && !trimmedContent) {
+  if(!trimmedContent && !trimmedTitle){
     return []
   }
 
-  const splits = await splitNoteIntoChunks(input.title, input.content)
+  const splits = await splitNoteIntoChunks(trimmedTitle, trimmedContent)
+
   const documents = splits.map(
-    (pageContent, chunkIndex) =>
-      ({
-        content: pageContent,
-        metadata: buildChunkMetadata(input, chunkIndex),
-      })
-    )
+    (split, index) => ({
+      content: split,
+      metadata: buildChunkMetadata(input, index)
+    })
+  )
 
   return documents
 }
