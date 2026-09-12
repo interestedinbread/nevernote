@@ -87,7 +87,7 @@ export async function getRagCollection() {
 
 
 export async function upsertRagDocuments(
-  documents: Array<Document<RagChunkMetadata>>,
+  documents: Document[],
   ids: string[]
 ): Promise<void> {
   if (documents.length === 0) {
@@ -105,7 +105,7 @@ export async function upsertRagDocuments(
   const embeddingClient = getRagEmbeddings()
 
   // extract page contents and metadata from documents to their own arrays
-  const pageContents = documents.map((doc) => doc.pageContent)
+  const pageContents = documents.map((doc) => doc.content)
   const metadatas = documents.map((doc) => doc.metadata)
 
   // use embeddingClient to make vectors from page contents
