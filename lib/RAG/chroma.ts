@@ -1,6 +1,6 @@
 import "server-only"
 
-import { Document } from "@langchain/core/documents"
+import { Document } from "@/lib/RAG/types"
 import { OpenAIEmbeddings } from "@langchain/openai"
 import { ChromaClient } from "chromadb"
 import type { Where } from "chromadb"
